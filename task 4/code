@@ -1,0 +1,79 @@
+# ==========================================
+# TASK 4: OPTIMIZATION MODEL (LINEAR PROGRAMMING)
+# ==========================================
+
+from pulp import *
+import matplotlib.pyplot as plt
+import os
+
+# Create output folder
+os.makedirs("outputs", exist_ok=True)
+
+print("\n🚀 Starting Optimization Model...")
+
+# -------------------------------
+# STEP 1: Define Problem
+# -------------------------------
+# Maximize Profit
+prob = LpProblem("Maximize_Profit", LpMaximize)
+
+# -------------------------------
+# STEP 2: Decision Variables
+# -------------------------------
+# Number of products
+x = LpVariable("Product_A", lowBound=0)
+y = LpVariable("Product_B", lowBound=0)
+
+# -------------------------------
+# STEP 3: Objective Function
+# -------------------------------
+# Profit = 40*x + 30*y
+prob += 40 * x + 30 * y
+
+# -------------------------------
+# STEP 4: Constraints
+# -------------------------------
+prob += 2 * x + y <= 100   # Resource 1
+prob += x + y <= 80        # Resource 2
+
+# -------------------------------
+# STEP 5: Solve Problem
+# -------------------------------
+prob.solve()
+
+print("\n📊 Status:", LpStatus[prob.status])
+
+# -------------------------------
+# STEP 6: Results
+# -------------------------------
+x_val = value(x)
+y_val = value(y)
+profit = value(prob.objective)
+
+print("\n✅ Optimal Solution:")
+print("Product A:", x_val)
+print("Product B:", y_val)
+print("Max Profit:", profit)
+
+# -------------------------------
+# STEP 7: Save Results
+# -------------------------------
+with open("outputs/results.txt", "w") as f:
+    f.write(f"Product A: {x_val}\n")
+    f.write(f"Product B: {y_val}\n")
+    f.write(f"Max Profit: {profit}\n")
+
+# -------------------------------
+# STEP 8: Visualization
+# -------------------------------
+labels = ['Product A', 'Product B']
+values = [x_val, y_val]
+
+plt.figure()
+plt.bar(labels, values)
+plt.title("Optimal Product Distribution")
+plt.savefig("outputs/solution.png")
+plt.close()
+
+print("📁 Output saved in 'outputs/' folder")
+print("\n🎯 TASK COMPLETED SUCCESSFULLY!")
