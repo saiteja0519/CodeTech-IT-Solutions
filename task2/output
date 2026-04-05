@@ -1,0 +1,48 @@
+
+---
+
+## 📈 Visual Results
+
+### 🔹 Accuracy Graph
+![Accuracy](outputs/accuracy.png)
+
+### 🔹 Loss Graph
+![Loss](outputs/loss.png)
+
+### 🔹 Sample Predictions
+
+| Image | Prediction |
+|------|-----------|
+| ![](outputs/prediction_0.png) | Sample 1 |
+| ![](outputs/prediction_1.png) | Sample 2 |
+| ![](outputs/prediction_2.png) | Sample 3 |
+| ![](outputs/prediction_3.png) | Sample 4 |
+| ![](outputs/prediction_4.png) | Sample 5 |
+
+---
+
+## 📦 Output Files
+
+All outputs are stored in the `outputs/` folder:
+
+- `accuracy.png` → Training vs Validation Accuracy  
+- `loss.png` → Training vs Validation Loss  
+- `prediction_*.png` → Model predictions  
+- `cnn_model.h5` → Saved trained model  
+
+---
+
+## 🛠️ Technologies Used
+
+- Python  
+- TensorFlow / Keras  
+- NumPy  
+- Matplotlib  
+
+---
+
+## 🚀 How to Run
+
+```bash
+pip install tensorflow matplotlib numpy
+python cnn_model.py
