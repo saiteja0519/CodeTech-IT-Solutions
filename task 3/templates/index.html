@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Titanic Survival Predictor</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>🚢 Titanic Survival Prediction</h1>
+
+    <form action="/predict" method="post">
+
+        <input type="number" name="Pclass" placeholder="Passenger Class (1-3)" required>
+        <input type="number" name="Sex" placeholder="Sex (0=Female, 1=Male)" required>
+        <input type="number" name="Age" placeholder="Age" required>
+        <input type="number" name="SibSp" placeholder="Siblings/Spouse" required>
+        <input type="number" name="Parch" placeholder="Parents/Children" required>
+        <input type="number" step="0.01" name="Fare" placeholder="Fare" required>
+        <input type="number" name="Embarked" placeholder="Embarked (0,1,2)" required>
+
+        <button type="submit">Predict</button>
+
+    </form>
+
+    <h2>{{ prediction_text }}</h2>
+</div>
+
+</body>
+</html>
