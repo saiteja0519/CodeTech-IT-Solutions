@@ -1,0 +1,127 @@
+# ==========================================
+# TASK 2: DEEP LEARNING (CNN - MNIST)
+# Image Classification with Visualization
+# ==========================================
+
+import tensorflow as tf
+from tensorflow.keras import layers, models
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+
+# Create output folder
+os.makedirs("outputs", exist_ok=True)
+
+# -------------------------------
+# STEP 1: Load Dataset
+# -------------------------------
+(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+
+print("Training data shape:", x_train.shape)
+print("Testing data shape:", x_test.shape)
+
+# -------------------------------
+# STEP 2: Preprocessing
+# -------------------------------
+# Normalize pixel values (0–255 → 0–1)
+x_train = x_train / 255.0
+x_test = x_test / 255.0
+
+# Reshape for CNN (add channel dimension)
+x_train = x_train.reshape(-1, 28, 28, 1)
+x_test = x_test.reshape(-1, 28, 28, 1)
+
+# -------------------------------
+# STEP 3: Build CNN Model
+# -------------------------------
+model = models.Sequential([
+    layers.Conv2D(32, (3,3), activation='relu', input_shape=(28,28,1)),
+    layers.MaxPooling2D(2,2),
+
+    layers.Conv2D(64, (3,3), activation='relu'),
+    layers.MaxPooling2D(2,2),
+
+    layers.Flatten(),
+    layers.Dense(128, activation='relu'),
+    layers.Dense(10, activation='softmax')
+])
+
+# -------------------------------
+# STEP 4: Compile Model
+# -------------------------------
+model.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# -------------------------------
+# STEP 5: Train Model
+# -------------------------------
+history = model.fit(
+    x_train, y_train,
+    epochs=5,
+    validation_data=(x_test, y_test)
+)
+
+# -------------------------------
+# STEP 6: Evaluate Model
+# -------------------------------
+test_loss, test_acc = model.evaluate(x_test, y_test)
+print("\n📊 Test Accuracy:", test_acc)
+
+# -------------------------------
+# STEP 7: VISUALIZATION
+# -------------------------------
+
+# Accuracy Graph
+plt.figure()
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.title("Model Accuracy")
+plt.xlabel("Epoch")
+plt.ylabel("Accuracy")
+plt.legend()
+plt.savefig("outputs/accuracy.png")
+plt.close()
+
+# Loss Graph
+plt.figure()
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.title("Model Loss")
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.legend()
+plt.savefig("outputs/loss.png")
+plt.close()
+
+print("✅ Accuracy & Loss graphs saved")
+
+# -------------------------------
+# STEP 8: Predictions Visualization
+# -------------------------------
+predictions = model.predict(x_test)
+
+for i in range(5):
+    plt.figure()
+    plt.imshow(x_test[i].reshape(28,28), cmap='gray')
+    plt.title(f"Predicted: {np.argmax(predictions[i])}, Actual: {y_test[i]}")
+    plt.axis('off')
+    plt.savefig(f"outputs/prediction_{i}.png")
+    plt.close()
+
+print("✅ Prediction images saved")
+
+# -------------------------------
+# STEP 9: Save Model
+# -------------------------------
+model.save("outputs/cnn_model.h5")
+
+print("✅ Model saved successfully!")
+
+# -------------------------------
+# STEP 10: Summary
+# -------------------------------
+print("\n🎯 TASK COMPLETED SUCCESSFULLY!")
+print("📁 Check 'outputs' folder for results")
