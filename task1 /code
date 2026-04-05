@@ -1,0 +1,89 @@
+# ==========================================
+# TASK 1: DATA PIPELINE (ETL + ML MODEL)
+# ==========================================
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report
+import joblib
+
+# -------------------------------
+# STEP 1: Extract (Load Data)
+# -------------------------------
+url = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+df = pd.read_csv(url)
+
+print("✅ Data Loaded Successfully")
+print(df.head())
+
+# -------------------------------
+# STEP 2: Transform (Cleaning)
+# -------------------------------
+
+# Drop unnecessary columns
+df.drop(['Name', 'Ticket', 'Cabin'], axis=1, inplace=True)
+
+# Handle missing values
+df['Age'].fillna(df['Age'].mean(), inplace=True)
+df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+
+# Encode categorical columns
+le = LabelEncoder()
+df['Sex'] = le.fit_transform(df['Sex'])
+df['Embarked'] = le.fit_transform(df['Embarked'])
+
+# -------------------------------
+# STEP 3: Feature & Target
+# -------------------------------
+X = df.drop('Survived', axis=1)
+y = df['Survived']
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# -------------------------------
+# STEP 4: Build Pipeline
+# -------------------------------
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('model', LogisticRegression())
+])
+
+# Train model
+pipeline.fit(X_train, y_train)
+
+# -------------------------------
+# STEP 5: Evaluation
+# -------------------------------
+y_pred = pipeline.predict(X_test)
+
+print("\n📊 Accuracy:", accuracy_score(y_test, y_pred))
+print("\n📄 Classification Report:\n", classification_report(y_test, y_pred))
+
+# -------------------------------
+# STEP 6: Visualization
+# -------------------------------
+df.hist(figsize=(10, 8))
+plt.suptitle("Feature Distributions")
+plt.savefig("data_distribution.png")
+plt.show()
+
+# -------------------------------
+# STEP 7: Save Outputs
+# -------------------------------
+
+# Save processed dataset
+df.to_csv("processed_data.csv", index=False)
+
+# Save trained model
+joblib.dump(pipeline, "model.pkl")
+
+print("\n✅ Pipeline + Model Saved Successfully!")
