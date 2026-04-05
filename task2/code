@@ -1,7 +1,5 @@
-# ==========================================
-# TASK 2: DEEP LEARNING (CNN - MNIST)
-# Image Classification with Visualization
-# ==========================================
+
+# TASK 2: DEEP LEARNING 
 
 import tensorflow as tf
 from tensorflow.keras import layers, models
@@ -9,7 +7,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-# Create output folder
+# -------------------------------
+# STEP 0: Create Output Folder
+# -------------------------------
 os.makedirs("outputs", exist_ok=True)
 
 # -------------------------------
@@ -23,11 +23,9 @@ print("Testing data shape:", x_test.shape)
 # -------------------------------
 # STEP 2: Preprocessing
 # -------------------------------
-# Normalize pixel values (0–255 → 0–1)
 x_train = x_train / 255.0
 x_test = x_test / 255.0
 
-# Reshape for CNN (add channel dimension)
 x_train = x_train.reshape(-1, 28, 28, 1)
 x_test = x_test.reshape(-1, 28, 28, 1)
 
@@ -71,11 +69,9 @@ test_loss, test_acc = model.evaluate(x_test, y_test)
 print("\n📊 Test Accuracy:", test_acc)
 
 # -------------------------------
-# STEP 7: VISUALIZATION
+# STEP 7: Accuracy Graph
 # -------------------------------
-
-# Accuracy Graph
-plt.figure()
+plt.figure(figsize=(6,4))
 plt.plot(history.history['accuracy'], label='Train Accuracy')
 plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
 plt.title("Model Accuracy")
@@ -85,8 +81,10 @@ plt.legend()
 plt.savefig("outputs/accuracy.png")
 plt.close()
 
-# Loss Graph
-plt.figure()
+# -------------------------------
+# STEP 8: Loss Graph
+# -------------------------------
+plt.figure(figsize=(6,4))
 plt.plot(history.history['loss'], label='Train Loss')
 plt.plot(history.history['val_loss'], label='Validation Loss')
 plt.title("Model Loss")
@@ -99,29 +97,29 @@ plt.close()
 print("✅ Accuracy & Loss graphs saved")
 
 # -------------------------------
-# STEP 8: Predictions Visualization
+# STEP 9: Prediction Images (FINAL)
 # -------------------------------
 predictions = model.predict(x_test)
 
 for i in range(5):
-    plt.figure()
+    plt.figure(figsize=(4,4))
     plt.imshow(x_test[i].reshape(28,28), cmap='gray')
-    plt.title(f"Predicted: {np.argmax(predictions[i])}, Actual: {y_test[i]}")
+
+    predicted_label = np.argmax(predictions[i])
+    actual_label = y_test[i]
+
+    plt.title(f"Predicted: {predicted_label} | Actual: {actual_label}")
     plt.axis('off')
+
     plt.savefig(f"outputs/prediction_{i}.png")
     plt.close()
 
 print("✅ Prediction images saved")
 
 # -------------------------------
-# STEP 9: Save Model
+# STEP 10: Save Model
 # -------------------------------
 model.save("outputs/cnn_model.h5")
 
-print("✅ Model saved successfully!")
-
-# -------------------------------
-# STEP 10: Summary
-# -------------------------------
 print("\n🎯 TASK COMPLETED SUCCESSFULLY!")
-print("📁 Check 'outputs' folder for results")
+print("📁 Check 'outputs' folder")
